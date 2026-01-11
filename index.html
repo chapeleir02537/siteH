@@ -35,6 +35,35 @@
             text-align: center;
             padding: 60px 20px 20px 20px;
             max-width: 600px;
+            position: relative;
+        }
+
+        /* --- BOTÃO DE MÚSICA --- */
+        .music-control {
+            position: absolute;
+            top: 10px;
+            right: 0;
+            left: 0;
+            margin: auto;
+            width: fit-content;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--rose-color);
+            color: var(--rose-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .music-control:hover {
+            background: var(--rose-color);
+            color: white;
         }
 
         h1 {
@@ -113,11 +142,13 @@
             margin-top: -5px;
         }
 
-        /* --- TIMELINE --- */
+        /* --- TIMELINE (Otimizada) --- */
         .timeline-scroll-area {
             width: 100%;
             overflow-x: auto;
             padding: 20px 0 50px 0;
+            -webkit-overflow-scrolling: touch; 
+            scroll-behavior: smooth;
             scrollbar-width: none; 
         }
         .timeline-scroll-area::-webkit-scrollbar { display: none; }
@@ -127,6 +158,7 @@
             min-width: max-content;
             padding: 0 40px;
             position: relative;
+            transform: translateZ(0);
         }
 
         .timeline-line-bg {
@@ -157,8 +189,21 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.06);
             border-radius: 4px;
             margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            will-change: transform;
         }
-        .year-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        .year-photo-frame:active {
+            transform: scale(0.95);
+        }
+
+        .year-photo-frame img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block;
+        }
 
         .timeline-dot {
             width: 10px;
@@ -175,7 +220,7 @@
             font-weight: 600;
         }
 
-        /* --- GALERIA POLAROID --- */
+        /* --- GALERIA FOTOS (5 FOTOS) --- */
         .gallery-section {
             width: 90%;
             max-width: 1000px;
@@ -239,6 +284,63 @@
             opacity: 0.8;
         }
 
+        /* --- MODAL (JANELA QUE ABRE A FOTO) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-polaroid {
+            background: white;
+            padding: 10px 10px 50px 10px;
+            max-width: 95%;
+            max-height: 85vh;
+            border-radius: 4px;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-polaroid img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+        }
+
+        .modal-caption-text {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Great Vibes', cursive;
+            color: #555;
+            font-size: 1.8rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
         .mensagem-final {
             width: 80%;
             max-width: 600px;
@@ -291,6 +393,14 @@
 <body>
 
     <header>
+        <div class="music-control" onclick="toggleMusic()">
+            <span id="musicIcon">▶️</span> 
+            <span id="musicText">Tocar Música</span>
+        </div>
+        <audio id="bgMusic" loop>
+            <source src="musica.mp3" type="audio/mpeg">
+        </audio>
+
         <h1><span id="titulo-anos">...</span> Anos de Nós</h1>
         <div class="data-destaque">Desde 10 . 01 . 2020</div>
         
@@ -321,48 +431,48 @@
             <div class="timeline-line-bg"></div>
 
             <div class="timeline-item">
-                <div class="year-photo-frame">
-                    <img src="foto2020.jpg" alt="2020">
+                <div class="year-photo-frame" onclick="expandirFoto(this, '2020')">
+                    <img src="foto2020.jpg" alt="2020" loading="lazy">
                 </div>
                 <div class="timeline-dot"></div>
                 <div class="year-text">2020</div>
             </div>
 
             <div class="timeline-item">
-                <div class="year-photo-frame">
-                    <img src="foto2021.jpg" alt="2021">
+                <div class="year-photo-frame" onclick="expandirFoto(this, '2021')">
+                    <img src="foto2021.jpg" alt="2021" loading="lazy">
                 </div>
                 <div class="timeline-dot"></div>
                 <div class="year-text">2021</div>
             </div>
 
             <div class="timeline-item">
-                <div class="year-photo-frame">
-                    <img src="foto2022.jpg" alt="2022">
+                <div class="year-photo-frame" onclick="expandirFoto(this, '2022')">
+                    <img src="foto2022.jpg" alt="2022" loading="lazy">
                 </div>
                 <div class="timeline-dot"></div>
                 <div class="year-text">2022</div>
             </div>
 
             <div class="timeline-item">
-                <div class="year-photo-frame">
-                    <img src="foto2023.jpg" alt="2023">
+                <div class="year-photo-frame" onclick="expandirFoto(this, '2023')">
+                    <img src="foto2023.jpg" alt="2023" loading="lazy">
                 </div>
                 <div class="timeline-dot"></div>
                 <div class="year-text">2023</div>
             </div>
 
             <div class="timeline-item">
-                <div class="year-photo-frame">
-                    <img src="foto2024.jpg" alt="2024">
+                <div class="year-photo-frame" onclick="expandirFoto(this, '2024')">
+                    <img src="foto2024.jpg" alt="2024" loading="lazy">
                 </div>
                 <div class="timeline-dot"></div>
                 <div class="year-text">2024</div>
             </div>
 
             <div class="timeline-item">
-                <div class="year-photo-frame">
-                    <img src="foto2025.jpg" alt="2025">
+                <div class="year-photo-frame" onclick="expandirFoto(this, '2025')">
+                    <img src="foto2025.jpg" alt="2025" loading="lazy">
                 </div>
                 <div class="timeline-dot"></div>
                 <div class="year-text">2025</div>
@@ -375,27 +485,40 @@
         <div class="gallery-grid">
             
             <div class="polaroid-card">
-                <img src="galeria1.jpg" alt="Foto">
-                <div class="polaroid-caption">Sorrisos</div>
+                <img src="galeria1.jpg" alt="Foto" loading="lazy">
+                <div class="polaroid-caption">Amor</div>
             </div>
 
             <div class="polaroid-card">
-                <img src="galeria2.jpg" alt="Foto">
-                <div class="polaroid-caption">Viagens</div>
+                <img src="galeria2.jpg" alt="Foto" loading="lazy">
+                <div class="polaroid-caption">Alegria</div>
             </div>
 
             <div class="polaroid-card">
-                <img src="galeria3.jpg" alt="Foto">
+                <img src="galeria3.jpg" alt="Foto" loading="lazy">
                 <div class="polaroid-caption">Nós</div>
             </div>
             
             <div class="polaroid-card">
-                <img src="galeria4.jpg" alt="Foto">
-                <div class="polaroid-caption">Amor</div>
+                <img src="galeria4.jpg" alt="Foto" loading="lazy">
+                <div class="polaroid-caption">Momentos</div>
+            </div>
+
+             <div class="polaroid-card">
+                <img src="galeria5.jpg" alt="Foto" loading="lazy">
+                <div class="polaroid-caption">Eterno</div>
             </div>
 
         </div>
     </section>
+
+    <div id="modalVisualizador" class="modal-overlay" onclick="fecharModal()">
+        <div class="modal-polaroid" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="fecharModal()">×</span>
+            <img id="modalImg" src="" alt="Visualização">
+            <div id="modalLegenda" class="modal-caption-text"></div>
+        </div>
+    </div>
 
     <div class="mensagem-final">
         Estes são apenas alguns momentos registrados, mas na nossa memória temos muitos outros. 
@@ -418,7 +541,6 @@
             const days = Math.floor(daysTotal % 365.25);
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
-
             const format = (num) => num < 10 ? `0${num}` : num;
 
             document.getElementById('anos').innerText = format(years);
@@ -455,6 +577,53 @@
                 document.body.appendChild(heart);
                 setTimeout(() => { heart.remove(); }, 6000);
             }
+        }
+
+        // --- MÚSICA ---
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            const icon = document.getElementById('musicIcon');
+            const text = document.getElementById('musicText');
+            if (audio.paused) {
+                audio.play();
+                icon.innerText = "⏸️";
+                text.innerText = "Pausar Música";
+            } else {
+                audio.pause();
+                icon.innerText = "▶️";
+                text.innerText = "Tocar Música";
+            }
+        }
+
+        // --- MODAL INTELIGENTE (CORREÇÃO DO ERRO) ---
+        function expandirFoto(elementoClicado, ano) {
+            const modal = document.getElementById('modalVisualizador');
+            const imgModal = document.getElementById('modalImg');
+            const legenda = document.getElementById('modalLegenda');
+            const card = document.querySelector('.modal-polaroid');
+
+            // Aqui está a mágica: ele pega o "src" da imagem que você clicou
+            // Assim não tem risco de nome errado
+            const imagemOrigem = elementoClicado.querySelector('img');
+            imgModal.src = imagemOrigem.src;
+            
+            legenda.innerText = "Ano " + ano;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function fecharModal() {
+            const modal = document.getElementById('modalVisualizador');
+            const card = document.querySelector('.modal-polaroid');
+            modal.style.opacity = '0';
+            card.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
     </script>
 </body>
